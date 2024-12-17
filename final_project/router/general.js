@@ -2,6 +2,7 @@ const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+const fs = require('fs').promises;
 const public_users = express.Router();
 
 
@@ -41,10 +42,20 @@ return res.status(404).json({message: "Unable to register user."});
 });
 
 // Get the book list available in the shop
-public_users.get('/', function (req, res) {
-    //Write your code here
-    return res.status(300).json(books);
-});
+
+// Read the content of the file 'example.txt' with 'utf8' encoding
+fs.readFile('booksdb.js', 'utf8')
+  // Handle the resolved state of the promise
+  .then((data) => { 
+    // This block will execute if the file is read successfully
+    console.log(data); // Print the file content to the console
+  }) 
+  // Handle the rejected state of the promise
+  .catch((err) => { 
+    // This block will execute if there is an error reading the file
+    console.error('Error reading file:', err); // Print the error message to the console
+  });
+
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
