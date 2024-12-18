@@ -4,8 +4,10 @@ const { resolve } = require('path');
 const { rejects } = require('assert');
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
-const fs = require('fs').promises;
+const axios = require('axios');
+const { error } = require('console');
 const public_users = express.Router();
+
 
 
 public_users.post("/register", (req, res) => {
@@ -49,26 +51,26 @@ public_users.post("/register", (req, res) => {
 
 //     return res.status(300).json(books);
 // });
-public_users.get('/', async function (req, res) {
-    const getBooks = new Promise((resolve, reject) => {
-        if (Object.keys(books).length > 0) {
-            setTimeout(() => {
-                resolve(books)
-            }, 3000)
-        } else {
-            reject("No books found");
-        }
 
+async function getBooks() {
+    let success = true;
 
-    });
+    if (success) {
+        return books; 
+    } else {
+        throw new Error("Failed to fetch books.");
+    }
+}
 
-    getBooks.then((data) => {
-        console.log("From Callback", data)
-    }).catch((err) => {
-        console.log("Error fetching data")
-    })
-})
-
+async function executeAsyncFunction() {
+    try {
+        const result = await getBooks();
+        console.log(" From Async Callback", result);
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+executeAsyncFunction();
 
 // Get book details based on ISBN
 // public_users.get('/isbn/:isbn', function (req, res) {
